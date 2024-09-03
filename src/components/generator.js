@@ -46,8 +46,8 @@ const Generator = () => {
           cover={
             <img
               alt="example"
-              src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              // src={imgUrl}
+            //   src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              src={imgUrl}
             />
           }
         >
