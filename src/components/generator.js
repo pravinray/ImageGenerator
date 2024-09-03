@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Card, Flex, Input } from "antd";
-import { generateAndFetch } from "../utils/generate-img";
 
 const Generator = () => {
   const { Meta } = Card;
@@ -11,15 +10,45 @@ const Generator = () => {
   const [error, setError] = useState("");
 
   const onSearchClick = async (value, _e, info) => {
-    console.log(info?.source);
-    console.log(value);
-
-    const generatedData = await generateAndFetch(value);
-    if (generatedData?.data && generatedData?.status === "COMPLETED") {
-      setImgUrl(generatedData.data.asset_url);
-    } else {
-      setError(generatedData?.details);
+    if (!value?.length) {
+      setError("Please type keywords.");
+      return;
     }
+    setImgUrl("");
+    setError("");
+    console.log(info?.source);
+    console.log(value?.length);
+    let responseData;
+
+    // fetch("http://localhost:3000/generate", {
+    fetch("https://pravin-img-generator-api.onrender.com/generate", {
+      method: "POST",
+      body: JSON.stringify({
+        keyword: value,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("aayo response :: ", data);
+        responseData = data?.data;
+        if (data?.data && data?.status === "COMPLETED") {
+          console.log(imgUrl, "valid data set gariyo");
+          setImgUrl(data?.data[0]?.asset_url);
+        } else {
+          console.log(error, "error from api data set gariyo");
+
+          setError(data?.data?.detail);
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+        console.log("error set gariyo");
+
+        setError(responseData?.details || err.message);
+      });
   };
 
   return (
@@ -30,23 +59,22 @@ const Generator = () => {
         flexDirection: "column",
       }}
     >
-      <div>{!updateLoading ? 99999 : 343434}</div>
       <Search
-        style={{ width: "75%" }}
+        style={{ width: "65%" }}
         placeholder="input search text"
         enterButton="Search"
         size="large"
         // loading={updateLoading}
         onSearch={onSearchClick}
       />
-      {imgUrl ?? (
+      {imgUrl && (
         <Card
           hoverable
           style={{ width: "55%", paddingTop: "inherit" }}
           cover={
             <img
-              alt="example"
-            //   src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              alt="Generated Image"
+              //   src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
               src={imgUrl}
             />
           }
@@ -54,11 +82,9 @@ const Generator = () => {
           <Meta title="Generated Image" />
         </Card>
       )}{" "}
-      {error ?? (
-        <Card style={{ width: 300 }}>
-          <p>Card content</p>
-          <p>{() => console.log("error :: ", error)}</p>
-          <p>{imgUrl}</p>
+      {error && (
+        <Card>
+          <h2 style={{ color: "red" }}>{error}</h2>
         </Card>
       )}
     </Flex>
