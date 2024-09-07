@@ -34,9 +34,11 @@ const Generator = () => {
       .then((data) => {
         console.log("aayo response :: ", data);
         responseData = data?.data;
-        if (data?.data && data?.status === "COMPLETED") {
-          console.log(imgUrl, "valid data set gariyo");
-          setImgUrl(data?.data[0]?.asset_url);
+        console.log('responseData :: ', responseData);
+        
+        if (data?.data?.data && data?.data?.status === "COMPLETED") {
+            setImgUrl(data?.data?.data[0]?.asset_url);
+            console.log(imgUrl, "valid data set gariyo");
         } else {
           console.log(error, "error from api data set gariyo");
 
