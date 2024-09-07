@@ -34,11 +34,11 @@ const Generator = () => {
       .then((data) => {
         console.log("aayo response :: ", data);
         responseData = data?.data;
-        console.log('responseData :: ', responseData);
-        
+        console.log("responseData :: ", responseData);
+
         if (data?.data?.data && data?.data?.status === "COMPLETED") {
-            setImgUrl(data?.data?.data[0]?.asset_url);
-            console.log(imgUrl, "valid data set gariyo");
+          setImgUrl(data?.data?.data[0]?.asset_url);
+          console.log(imgUrl, "valid data set gariyo");
         } else {
           console.log(error, "error from api data set gariyo");
 
@@ -56,19 +56,27 @@ const Generator = () => {
   return (
     <Flex
       style={{
-        padding: "120px",
+        //   padding: "120px",
         alignItems: "center",
         flexDirection: "column",
       }}
     >
-      <Search
-        style={{ width: "65%" }}
-        placeholder="input search text"
-        enterButton="Search"
-        size="large"
-        // loading={updateLoading}
-        onSearch={onSearchClick}
-      />
+      <Card
+        style={{
+          minWidth: "-webkit-fill-available",
+          textAlignLast: "center",
+          paddingTop: "40px",
+        }}
+      >
+        <Search
+          style={{ width: "65%" }}
+          placeholder="Type it in, let the art begin!"
+          enterButton="Search"
+          size="large"
+          // loading={updateLoading}
+          onSearch={onSearchClick}
+        />
+      </Card>
       {imgUrl && (
         <Card
           hoverable
