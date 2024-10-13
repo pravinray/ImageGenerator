@@ -1,12 +1,14 @@
 import "./App.css";
 import Generator from "./components/generator";
+import Logo from "./components/logo";
 
-function App() {
+const App = () => {
   return (
     <>
-      <Generator />
+      <Logo />
+      <Generator />;
     </>
   );
-}
+};
 
 export default App;

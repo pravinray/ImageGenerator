@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Card, Flex, Input } from "antd";
+import React, { useState } from "react";
+import { Card, Flex, Image, Input } from "antd";
+import { useLoadingContext } from "../LoadingProvider";
 
 const Generator = () => {
   const { Meta } = Card;
   const { Search } = Input;
 
-  const [updateLoading, setUpdateLoading] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
   const [error, setError] = useState("");
+
+  const { loading, setLoading } = useLoadingContext();
 
   const onSearchClick = async (value, _e, info) => {
     if (!value?.length) {
       setError("Please type keywords.");
       return;
     }
+    setLoading(true);
     setImgUrl("");
     setError("");
-    console.log(info?.source);
-    console.log(value?.length);
+
     let responseData;
 
-    // fetch("http://localhost:3000/generate", {
-    fetch("https://pravin-img-generator-api.onrender.com/generate", {
+    await fetch(`${process.env.REACT_APP_API_URL}/generate`, {
       method: "POST",
       body: JSON.stringify({
         keyword: value,
@@ -33,16 +34,16 @@ const Generator = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("aayo response :: ", data);
-        responseData = data?.data;
+        responseData = data;
         console.log("responseData :: ", responseData);
 
-        if (data?.data?.data && data?.data?.status === "COMPLETED") {
-          setImgUrl(data?.data?.data[0]?.asset_url);
+        if (responseData && responseData?.status === "COMPLETED") {
+          setImgUrl(responseData?.data[0]?.asset_url);
           console.log(imgUrl, "valid data set gariyo");
         } else {
           console.log(error, "error from api data set gariyo");
 
-          setError(data?.data?.detail);
+          setError(responseData.detail);
         }
       })
       .catch((err) => {
@@ -51,12 +52,13 @@ const Generator = () => {
 
         setError(responseData?.details || err.message);
       });
+
+    setLoading(false);
   };
 
   return (
     <Flex
       style={{
-        //   padding: "120px",
         alignItems: "center",
         flexDirection: "column",
       }}
@@ -66,6 +68,7 @@ const Generator = () => {
           minWidth: "-webkit-fill-available",
           textAlignLast: "center",
           paddingTop: "40px",
+          border: "none",
         }}
       >
         <Search
@@ -73,21 +76,23 @@ const Generator = () => {
           placeholder="Type it in, let the art begin!"
           enterButton="Search"
           size="large"
-          // loading={updateLoading}
           onSearch={onSearchClick}
         />
       </Card>
+      {loading && (
+        <Card style={{ border: "none" }}>
+          <Image
+            alt="Loading"
+            src={require("../assets/images/loading.gif")}
+            preview={false}
+          />
+        </Card>
+      )}
       {imgUrl && (
         <Card
           hoverable
           style={{ width: "55%", paddingTop: "inherit" }}
-          cover={
-            <img
-              alt="Generated Image"
-              //   src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              src={imgUrl}
-            />
-          }
+          cover={<Image alt="Generated Image" src={imgUrl} />}
         >
           <Meta title="Generated Image" />
         </Card>
