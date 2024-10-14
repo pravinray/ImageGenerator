@@ -1,12 +1,12 @@
 import "./App.css";
 import Generator from "./components/generator";
-import Logo from "./components/logo";
+import Header from "./components/header";
 
 const App = () => {
   return (
     <>
-      <Logo />
-      <Generator />;
+      <Header />
+      <Generator />
     </>
   );
 };
