@@ -94,7 +94,7 @@ const Generator = () => {
           style={{ width: "55%", paddingTop: "inherit" }}
           cover={<Image alt="Generated Image" src={imgUrl} />}
         >
-          <Meta title="Generated Image" />
+          <Meta style={{ textAlign: "center" }} title="Generated Image" />
         </Card>
       )}{" "}
       {error && (
